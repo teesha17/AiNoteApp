@@ -1,6 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Alert } from "@mui/material";
 
-export default function NoteEditorDialog({ open, editingNote, title, setTitle, content, setContent, onSave, saving, error }) {
+export default function NoteEditorDialog({ open, editingNote, title, setTitle, content, setContent, onSave, saving, error, onClose}) {
   return (
     <Dialog open={open} onClose={() => !saving && setOpen(false)} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 2 } }}>
         <DialogTitle>{editingNote ? "Edit note" : "New note"}</DialogTitle>
@@ -38,7 +38,7 @@ export default function NoteEditorDialog({ open, editingNote, title, setTitle, c
             />
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button onClick={() => !saving && setOpen(false)} disabled={saving}>
+            <Button onClick={onClose} disabled={saving}>
               Cancel
             </Button>
             <Button type="submit" variant="contained" disabled={saving}>

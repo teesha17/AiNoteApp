@@ -8,9 +8,18 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/notes" element={token ? <Notes /> : <Navigate to="/" replace />} />
+      <Route
+        path="/"
+        element={token ? <Navigate to="/notes" replace /> : <Login />}
+      />
+      <Route
+        path="/register"
+        element={token ? <Navigate to="/notes" replace /> : <Register />}
+      />
+      <Route
+        path="/notes"
+        element={token ? <Notes /> : <Navigate to="/" replace />}
+      />
     </Routes>
   );
 }

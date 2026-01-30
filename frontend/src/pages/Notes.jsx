@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import { Container } from "@mui/material";
+import { Container, Paper, Typography, Button, Box } from "@mui/material";
+import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
+import SearchOffOutlinedIcon from "@mui/icons-material/SearchOffOutlined";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import NotesGrid from "../components/NotesGrid";
 import NoteEditorDialog from "../components/NoteEditorDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import { useNavigate } from "react-router-dom";
-
 export default function Notes() {
   const [notes, setNotes] = useState([]);
   const [search, setSearch] = useState("");
@@ -20,8 +20,6 @@ export default function Notes() {
   const [createError, setCreateError] = useState("");
   const [deleteNoteId, setDeleteNoteId] = useState(null);
   const [loadingNotes, setLoadingNotes] = useState(true);
-
-  const navigate = useNavigate();
 
   async function loadNotes() {
     setLoadingNotes(true);
@@ -90,7 +88,8 @@ export default function Notes() {
 
   function handleLogout() {
     localStorage.removeItem("token");
-    navigate("/", { replace: true });
+    localStorage.removeItem("email");
+    window.location.replace("/");
   }
 
   function timeAgo(date) {
@@ -116,6 +115,8 @@ export default function Notes() {
   }, []);
 
   const hasNotes = notes.length > 0;
+  const isEmpty = !loadingNotes && notes.length === 0;
+  const isSearchEmpty = isEmpty && search.trim() !== "";
 
   return (
     <>
@@ -123,10 +124,56 @@ export default function Notes() {
 
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <SearchBar search={search} setSearch={setSearch} onSearch={searchNotes} onCreate={openCreateModal} searching={searching} />
-        <NotesGrid notes={notes} openEditModal={openEditModal} setDeleteNoteId={setDeleteNoteId} timeAgo={timeAgo} />
+        {isEmpty ? (
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 5,
+              textAlign: "center",
+              borderRadius: 2,
+              borderStyle: "dashed",
+              borderWidth: 2,
+              bgcolor: "action.hover",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mb: 2,
+                color: "text.secondary",
+              }}
+            >
+              {isSearchEmpty ? (
+                <SearchOffOutlinedIcon sx={{ fontSize: 56 }} />
+              ) : (
+                <NoteAddOutlinedIcon sx={{ fontSize: 56 }} />
+              )}
+            </Box>
+            <Typography variant="h6" fontWeight={600} color="text.primary" gutterBottom>
+              {isSearchEmpty ? "No notes match your search" : "No notes yet"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 320, mx: "auto" }}>
+              {isSearchEmpty
+                ? "Try a different search term or clear the search to see all notes."
+                : "Create your first note to get started."}
+            </Typography>
+            {isSearchEmpty ? (
+              <Button variant="outlined" onClick={() => { setSearch(""); loadNotes(); }}>
+                Clear search
+              </Button>
+            ) : (
+              <Button variant="contained" startIcon={<NoteAddOutlinedIcon />} onClick={openCreateModal}>
+                Create your first note
+              </Button>
+            )}
+          </Paper>
+        ) : (
+          <NotesGrid notes={notes} openEditModal={openEditModal} setDeleteNoteId={setDeleteNoteId} timeAgo={timeAgo} />
+        )}
       </Container>
 
-      <NoteEditorDialog open={open} editingNote={editingNote} title={title} setTitle={setTitle} content={content} setContent={setContent} onSave={saveNote} saving={saving} error={createError} />
+      <NoteEditorDialog open={open} editingNote={editingNote} title={title} setTitle={setTitle} content={content} setContent={setContent} onSave={saveNote} saving={saving} error={createError} onClose={() => !saving && setOpen(false)}/>
 
       <DeleteConfirmDialog
         open={!!deleteNoteId}

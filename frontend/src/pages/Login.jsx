@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../api/api";
 import {
     Box,
@@ -16,7 +16,6 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import AutoStoriesOutlined from "@mui/icons-material/AutoStoriesOutlined";
 
 export default function Login() {
-    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -33,8 +32,8 @@ export default function Login() {
             if (token) {
                 localStorage.setItem("token", token);
                 localStorage.setItem("email", email);
+                window.location.replace("/notes");
             }
-            navigate("/notes", { replace: true });
         } catch (err) {
             setError(
                 err.response?.data?.message ??
