@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import { Container, Paper, Typography, Button, Box } from "@mui/material";
+import { Container, Paper, Typography, Button, Box, CircularProgress } from "@mui/material";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import SearchOffOutlinedIcon from "@mui/icons-material/SearchOffOutlined";
 import Header from "../components/Header";
@@ -122,56 +122,81 @@ export default function Notes() {
     <>
       <Header onlogout={handleLogout} />
 
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <SearchBar search={search} setSearch={setSearch} onSearch={searchNotes} onCreate={openCreateModal} searching={searching} />
-        {isEmpty ? (
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 5,
-              textAlign: "center",
-              borderRadius: 2,
-              borderStyle: "dashed",
-              borderWidth: 2,
-              bgcolor: "action.hover",
-            }}
-          >
-            <Box
+      <Box
+        sx={{
+          minHeight: "calc(100vh - 64px)",
+          background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)",
+        }}
+      >
+        <Container maxWidth="lg" sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
+          <SearchBar search={search} setSearch={setSearch} onSearch={searchNotes} onCreate={openCreateModal} searching={searching} />
+          {isEmpty ? (
+            <Paper
+              variant="outlined"
               sx={{
-                display: "flex",
-                justifyContent: "center",
-                mb: 2,
-                color: "text.secondary",
+                p: { xs: 4, sm: 6 },
+                textAlign: "center",
+                borderRadius: 3,
+                borderStyle: "dashed",
+                borderWidth: 2,
+                borderColor: "rgba(99, 102, 241, 0.2)",
+                bgcolor: "rgba(255, 255, 255, 0.7)",
+                backdropFilter: "blur(8px)",
+                boxShadow: "0 4px 24px -4px rgba(15, 23, 42, 0.06)",
               }}
             >
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mx: "auto",
+                  mb: 2,
+                  bgcolor: "rgba(99, 102, 241, 0.08)",
+                  color: "primary.main",
+                }}
+              >
+                {isSearchEmpty ? (
+                  <SearchOffOutlinedIcon sx={{ fontSize: 40 }} />
+                ) : (
+                  <NoteAddOutlinedIcon sx={{ fontSize: 40 }} />
+                )}
+              </Box>
+              <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom letterSpacing="-0.01em">
+                {isSearchEmpty ? "No notes match your search" : "No notes yet"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 320, mx: "auto", lineHeight: 1.6 }}>
+                {isSearchEmpty
+                  ? "Try a different search term or clear the search to see all notes."
+                  : "Create your first note to get started."}
+              </Typography>
               {isSearchEmpty ? (
-                <SearchOffOutlinedIcon sx={{ fontSize: 56 }} />
+                <Button variant="outlined" onClick={() => { setSearch(""); loadNotes(); }} sx={{ borderRadius: 2 }}>
+                  Clear search
+                </Button>
               ) : (
-                <NoteAddOutlinedIcon sx={{ fontSize: 56 }} />
+                <Button
+                  variant="contained"
+                  startIcon={<NoteAddOutlinedIcon />}
+                  onClick={openCreateModal}
+                  sx={{ borderRadius: 2, boxShadow: "0 4px 14px rgba(99, 102, 241, 0.35)" }}
+                >
+                  Create your first note
+                </Button>
               )}
+            </Paper>
+          ) : loadingNotes && notes.length === 0 ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+              <CircularProgress size={40} thickness={4} sx={{ color: "primary.main" }} />
             </Box>
-            <Typography variant="h6" fontWeight={600} color="text.primary" gutterBottom>
-              {isSearchEmpty ? "No notes match your search" : "No notes yet"}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 320, mx: "auto" }}>
-              {isSearchEmpty
-                ? "Try a different search term or clear the search to see all notes."
-                : "Create your first note to get started."}
-            </Typography>
-            {isSearchEmpty ? (
-              <Button variant="outlined" onClick={() => { setSearch(""); loadNotes(); }}>
-                Clear search
-              </Button>
-            ) : (
-              <Button variant="contained" startIcon={<NoteAddOutlinedIcon />} onClick={openCreateModal}>
-                Create your first note
-              </Button>
-            )}
-          </Paper>
-        ) : (
-          <NotesGrid notes={notes} openEditModal={openEditModal} setDeleteNoteId={setDeleteNoteId} timeAgo={timeAgo} />
-        )}
-      </Container>
+          ) : (
+            <NotesGrid notes={notes} openEditModal={openEditModal} setDeleteNoteId={setDeleteNoteId} timeAgo={timeAgo} />
+          )}
+        </Container>
+      </Box>
 
       <NoteEditorDialog open={open} editingNote={editingNote} title={title} setTitle={setTitle} content={content} setContent={setContent} onSave={saveNote} saving={saving} error={createError} onClose={() => !saving && setOpen(false)}/>
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../api/api";
 import {
   Box,
@@ -13,10 +13,10 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import AutoStoriesOutlined from "@mui/icons-material/AutoStoriesOutlined";
+import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 export default function Register() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +29,7 @@ export default function Register() {
     setLoading(true);
     try {
       await api.post("/auth/register", { email, password });
-      navigate("/", { replace: true });
+      window.location.replace("/");
     } catch (err) {
       setError(
         err.response?.data?.message ??
@@ -43,46 +43,89 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-svh flex items-center justify-center bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-100 px-4 py-8">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        px: 2,
+        py: 4,
+        background: "linear-gradient(135deg, #f0f4ff 0%, #e8ecff 40%, #f8fafc 100%)",
+        position: "relative",
+        overflow: "hidden",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: "-20%",
+          right: "-10%",
+          width: "50%",
+          height: "60%",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
+          pointerEvents: "none",
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          bottom: "-15%",
+          left: "-5%",
+          width: "40%",
+          height: "50%",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)",
+          pointerEvents: "none",
+        },
+      }}
+    >
       <Paper
         elevation={0}
         sx={{
           width: "100%",
           maxWidth: 420,
-          p: 4,
+          p: { xs: 3, sm: 4 },
           borderRadius: 3,
           border: "1px solid",
-          borderColor: "divider",
-          bgcolor: "background.paper",
-          boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.08)",
+          borderColor: "rgba(99, 102, 241, 0.12)",
+          bgcolor: "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.03)",
+          position: "relative",
+          zIndex: 1,
         }}
       >
-        <Box className="flex flex-col items-center mb-6">
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 4 }}>
           <Box
-            className="flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
-            sx={{ bgcolor: "primary.main", color: "primary.contrastText" }}
+            sx={{
+              width: 56,
+              height: 56,
+              borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mb: 2,
+              background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+              color: "#fff",
+              boxShadow: "0 8px 24px -4px rgba(99, 102, 241, 0.35)",
+            }}
           >
-            <AutoStoriesOutlined sx={{ fontSize: 32 }} />
+            <AutoStoriesRoundedIcon sx={{ fontSize: 28 }} />
           </Box>
-          <Typography variant="h5" fontWeight={700} color="text.primary">
+          <Typography variant="h5" fontWeight={700} color="text.primary" letterSpacing="-0.02em">
             Create account
           </Typography>
-          <Typography variant="body2" color="text.secondary" className="mt-1">
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             Get started with AiNote
           </Typography>
         </Box>
 
         {error && (
-          <Alert
-            severity="error"
-            onClose={() => setError("")}
-            sx={{ mb: 2, borderRadius: 2 }}
-          >
+          <Alert severity="error" onClose={() => setError("")} sx={{ mb: 2, borderRadius: 2 }}>
             {error}
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleRegister} className="flex flex-col gap-3">
+        <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <TextField
             label="Email"
             type="email"
@@ -122,22 +165,22 @@ export default function Register() {
             size="large"
             disabled={loading}
             fullWidth
+            endIcon={!loading && <ArrowForwardRoundedIcon />}
             sx={{ mt: 1, py: 1.5, borderRadius: 2 }}
           >
             {loading ? "Creating account…" : "Create account"}
           </Button>
-          <Typography variant="body2" color="text.secondary" className="text-center mt-3">
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", mt: 2 }}>
             Already have an account?{" "}
             <Link
               to="/"
-              className="font-medium no-underline hover:underline"
-              style={{ color: "var(--mui-palette-primary-main)" }}
+              style={{ color: "#6366f1", fontWeight: 600, textDecoration: "none" }}
             >
               Sign in
             </Link>
           </Typography>
         </Box>
       </Paper>
-    </div>
+    </Box>
   );
 }

@@ -7,26 +7,25 @@ export default function NoteCard({ note, openEditModal, setDeleteNoteId, timeAgo
     <Card
       variant="outlined"
       sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
         borderRadius: 2,
-        transition: "border-color 0.2s, box-shadow 0.2s",
+        borderColor: "rgba(15, 23, 42, 0.08)",
+        transition: "border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease",
         "&:hover": {
-          borderColor: "primary.light",
-          boxShadow: 1,
+          borderColor: "rgba(99, 102, 241, 0.25)",
+          boxShadow: "0 12px 24px -8px rgba(15, 23, 42, 0.1), 0 4px 8px -4px rgba(15, 23, 42, 0.06)",
+          transform: "translateY(-2px)",
         },
         "&:hover .note-actions": {
           opacity: 1,
         },
       }}
     >
-      <CardContent sx={{ flexGrow: 1, position: "relative", pt: 2 }}>
+      <CardContent sx={{ position: "relative", pt: 2, pb: 2 }}>
         <Box
           className="note-actions"
           sx={{
             position: "absolute",
-            top: 8,
+            top: 12,
             right: 8,
             display: "flex",
             gap: 0.5,
@@ -35,19 +34,36 @@ export default function NoteCard({ note, openEditModal, setDeleteNoteId, timeAgo
           }}
         >
           <Tooltip title="Edit">
-            <IconButton size="small" onClick={() => openEditModal(note)}>
+            <IconButton
+              size="small"
+              onClick={() => openEditModal(note)}
+              sx={{
+                bgcolor: "background.paper",
+                boxShadow: 1,
+                "&:hover": { bgcolor: "primary.main", color: "primary.contrastText" },
+              }}
+            >
               <EditRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-
           <Tooltip title="Delete">
-            <IconButton size="small" color="error" onClick={() => setDeleteNoteId(note._id)}>
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => setDeleteNoteId(note._id)}
+              sx={{ bgcolor: "background.paper", boxShadow: 1 }}
+            >
               <DeleteRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </Box>
 
-        <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ pr: 6 }}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          gutterBottom
+          sx={{ pr: 6, lineHeight: 1.4 }}
+        >
           {note.title || "Untitled"}
         </Typography>
 
@@ -55,18 +71,15 @@ export default function NoteCard({ note, openEditModal, setDeleteNoteId, timeAgo
           variant="body2"
           color="text.secondary"
           sx={{
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
             mb: 1.5,
             whiteSpace: "pre-wrap",
+            lineHeight: 1.5,
           }}
         >
           {note.content || "No content"}
         </Typography>
 
-        <Typography variant="caption" color="text.disabled">
+        <Typography variant="caption" color="text.disabled" sx={{ fontWeight: 500 }}>
           {timeAgo(note.updatedAt || note.createdAt)}
         </Typography>
       </CardContent>

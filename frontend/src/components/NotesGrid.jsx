@@ -1,8 +1,17 @@
-import { Grid, CircularProgress, Box } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
+import Masonry from "@mui/lab/Masonry";
 import { useEffect, useRef } from "react";
 import NoteCard from "./NoteCard";
 
-export default function NotesGrid({ notes, openEditModal, setDeleteNoteId, timeAgo, loadMore, hasMore, loadingNotes }) {
+export default function NotesGrid({ 
+  notes, 
+  openEditModal, 
+  setDeleteNoteId, 
+  timeAgo, 
+  loadMore, 
+  hasMore, 
+  loadingNotes 
+}) {
 
   const observerRef = useRef(null);
 
@@ -10,9 +19,7 @@ export default function NotesGrid({ notes, openEditModal, setDeleteNoteId, timeA
     if (!hasMore || loadingNotes) return;
 
     const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        loadMore();
-      }
+      if (entries[0].isIntersecting) loadMore();
     });
 
     if (observerRef.current) observer.observe(observerRef.current);
@@ -22,20 +29,21 @@ export default function NotesGrid({ notes, openEditModal, setDeleteNoteId, timeA
 
   return (
     <>
-      <Grid container spacing={3}>
+      <Masonry
+        columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+        spacing={2}
+      >
         {notes.map(note => (
-          <Grid item xs={12} sm={6} md={4} key={note._id}>
-            <NoteCard
-              note={note}
-              openEditModal={openEditModal}
-              setDeleteNoteId={setDeleteNoteId}
-              timeAgo={timeAgo}
-            />
-          </Grid>
+          <NoteCard
+            key={note._id}
+            note={note}
+            openEditModal={openEditModal}
+            setDeleteNoteId={setDeleteNoteId}
+            timeAgo={timeAgo}
+          />
         ))}
-      </Grid>
+      </Masonry>
 
-      {/* Scroll Trigger */}
       {hasMore && (
         <Box ref={observerRef} sx={{ display: "flex", justifyContent: "center", py: 4 }}>
           {loadingNotes && <CircularProgress />}
