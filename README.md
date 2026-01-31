@@ -112,6 +112,7 @@ docker compose up --build
 * Rich‑text editor support
 * Dark mode & accessibility improvements
 * Mobile responsive enhancements
+* Theme customization for notes
 
 ### AI Features Expansion
 
