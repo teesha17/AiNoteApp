@@ -83,36 +83,6 @@ docker compose up --build
 
 ---
 
-## Useful Docker Commands
-
-```bash
-# View running containers
-docker ps
-
-# Stop containers
-docker compose down
-
-# Restart containers
-docker compose up --build
-
-# View logs
-docker logs ainote_backend
-```
-
----
-
-## Project Structure
-
-```
-AiNoteApp/
- ├── frontend/     # React + Vite UI
- ├── backend/      # Node + Express API
- ├── docker-compose.yml
- └── README.md
-```
-
----
-
 ## Assumptions Made During Development
 
 * Users have Docker installed
@@ -148,11 +118,4 @@ AiNoteApp/
 * AI note suggestions
 * Auto‑categorization of notes
 * Voice‑to‑text note creation
-
-### Testing & DevOps
-
-* Unit & integration tests
-* CI/CD GitHub Actions pipeline
-* Automated deployment to cloud (AWS/GCP/Vercel)
-* Monitoring with Prometheus/Grafana
 
